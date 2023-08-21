@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>First Form Ex</title>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-3.1.1.min.js"></script>
+</head>
+    <body>
+        <h1 style="font-weight: bold;">A Basic Form</h1>
+        <hr>
+        <form action = "#">
+            <fieldset>
+                <legend>Animal Information</legend>
+                <div>
+                    <label for = "username">Animal:</label>
+                    <input id = "username" type = "text" name = "username">
+
+                    <label for="color">Color:</label>
+                    <input type = "color" id = "color" name = "color">
+
+                    <label for="range">Size:</label>
+                    <input type = "range" id = "range" name = "range"min = "1" max = "10" value = "1">
+
+                    <label for = "habitat">Habitat</label>
+                    <select id = "habitat" name = "habitat">
+                            <option selected="1" value = "1">Fresh Water</option>
+                            <option value = "2">Salt Water</option>
+                            <option value = "3">Above Ground</option>
+                            <option value = "4">Underground</option>
+                    </select>
+                </div>
+                <input type = "reset" name = "reset" value = "Clear Form">
+                <input type = "submit" name = "send" value = "Send Form">
+            </fieldset>
+            <br>
+            <div id ="error"></div>
+            <br>
+            <table border ="1" id = "table">
+                <tr>
+                    <th>Animal</th>
+                    <th>Color Dec</th>
+                    <th>Color Hex</th>
+                    <th>Size</th>
+                    <th>Habitat</th>
+                </tr>
+            </table>
+            <input type = "button" name = "clearTabel" value = "Clear Table" onclick="clearTableClick()">
+            <input type = "button" name = "fillForm" value = "Fill Form" onclick="fillTableClick()">
+            <input type="number" min="1" value = "1" id = "tableIndex">
+        </form>
+        <script type="text/javascript">
+            $(document).ready(function()
+            {
+                $("form").submit(function(event)
+                {
+                    let error = false;
+                    $("#table tr").each(function() 
+                    {
+                        if ($(this).find("td:eq(0)").text() == $("#username").val())
+                            error = true;
+                    });
+
+                    if ($("#username").val() == "") {
+                        $("#error").html("An Animal Must Be Entered");
+                        return false;
+                    }
+                    else if (error) {
+                        $("#error").html("Animal Already Entered");
+                        return false;
+                    }
+                    else
+                    {
+                        $("#error").html("");
+                    }
+                    let red = parseInt("0x" + $("#color").val().substring(1,3));
+                    let green = parseInt("0x" + $("#color").val().substring(3,5));
+                    let blue = parseInt("0x" + $("#color").val().substring(5,7));
+
+                    $("#table").append("<tr class='tr1'><td>" + $("#username").val()
+                    +"</td>" + "<td>" + red + " " + green + " " + blue +"</td>" + "<td>" + $("#color").val() +"</td>" + "</td>" + "<td>" + $("#range").val() +"</td>" + "</td>" + "<td>" + $('#habitat :selected').text() +"</td>");
+                    return false;
+                });
+            });
+            function fillTableClick(){
+                if($("#tableIndex").val() <= $("#table tr").length-1 && $("#tableIndex").val() != 0){
+                    let index = 0;
+                    $("#table tr").each(function(){
+                        if(index == $("#tableIndex").val()){
+                            $("#username").val($(this).find("td:eq(0)").text());
+                            $("#color").val($(this).find("td:eq(2)").text());
+                            $("#range").val($(this).find("td:eq(3)").text());
+                            if($(this).find("td:eq(4)").text() == 'Fresh Water')
+                                $('#habitat').val(1);
+                            else if($(this).find("td:eq(4)").text() == 'Salt Water')
+                                $('#habitat').val(2);
+                            else if($(this).find("td:eq(4)").text() == 'Above Ground')
+                                $('#habitat').val(3);
+                            else
+                                $('#habitat').val(4);
+                        }
+                        index++;
+                    });
+                }
+                else{
+                    $("#error").html("Invalid Index");
+                    return;
+                }
+                $("#error").html("");
+            }
+            function clearTableClick(){
+                $(".tr1").remove();
+            }
+
+        </script>
+    </body>
+</html>
